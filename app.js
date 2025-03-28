@@ -10,8 +10,10 @@ async function scrap(url) {
         const productContainer = document.querySelector('div[data-aid="PRODUCT_LIST_RENDERED"]');
         if (!productContainer) return { error: "Product list not found" };
 
-        const productCards = productContainer.querySelectorAll('div[data-ux="GridCell"]');
         const products = [];
+        const productCards = productContainer.querySelectorAll('div[data-ux="GridCell"');
+
+        if (productCards.length === 0) return { error: "No products found" };
 
         productCards.forEach(card => {
             const link = card.querySelector('a[data-ux="Link"]')?.href || null;
@@ -37,4 +39,14 @@ async function scrap(url) {
     return JSON.stringify(data, null, 2);
 }
 
-scrap('https://theartshoppeonline.com/shop/').then(json => console.log(json));
+
+async function runScrapping() {
+    const pageCount = 9;
+    for (let k = 1; k <= pageCount; k++) {
+        const url = `https://theartshoppeonline.com/shop/ols/products?page=${k}`;
+        console.log(url);
+        await scrap(url).then(json => console.log(json));
+    }
+}
+
+runScrapping();
