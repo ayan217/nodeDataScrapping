@@ -44,7 +44,7 @@ class Scrap {
             if (links) {
                 allProductLinks.push(...links);
                 await AllLinks.bulkCreate(
-                    allProductLinks.map(link => ({ link })), 
+                    allProductLinks.map(link => ({ link })),
                     { ignoreDuplicates: true }
                 );
             }
@@ -60,6 +60,11 @@ class Scrap {
 
     async truncate() {
         await AllLinks.destroy({ truncate: true });
+    }
+    async getSingleProduct(id) {
+        const row = await AllLinks.findByPk(id);
+        // console.log(JSON.stringify(row, null, 2));
+       return row;
     }
 }
 
