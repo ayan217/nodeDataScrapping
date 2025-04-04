@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const { syncModels, AllLinks } = require('../models');
 
-class Scrap {
+class Scrap {K
     async sync() {
         await syncModels();
     }
@@ -81,7 +81,8 @@ class Scrap {
 
     async getAllBaseLinks() {
         const allLinks = await AllLinks.findAll();
-        console.log('All links:', JSON.stringify(allLinks, null, 2));
+        // console.log('All links:', JSON.stringify(allLinks, null, 2));
+        return allLinks;
     }
 
     async truncate() {
