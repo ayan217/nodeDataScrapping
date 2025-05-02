@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const { syncModels, AllLinks, BlogLinks } = require('../models');
+const { syncModels, Blogs, BlogLinks } = require('../models');
 
 class Scrap {
     constructor(baseLink, modal) {
@@ -12,8 +12,8 @@ class Scrap {
     async truncate() {
         await this.modal.truncate();
     }
-    async scrapSingleProduct(url) {
-        const doesExist = await this.modal.findOne({ where: { link: url } });
+    async scrapSingleProduct(url, category) {
+        const doesExist = await Blogs.findOne({ where: { link: url, category: category } });
         if (doesExist) {
             console.log('Already exists in the database:', url);
             return false;
