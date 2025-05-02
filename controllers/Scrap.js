@@ -10,6 +10,9 @@ class Scrap {
     async sync() {
         await syncModels();
     }
+    async truncate(modal) {
+        await modal.truncate();
+    }
     async scrapSingleProduct(url) {
         const browser = await puppeteer.launch({
             headless: true,
@@ -71,14 +74,15 @@ class Scrap {
     }
     async runScrappingForBaseLinks(slug) {
         const allProductLinks = [];
-
+        const category = slug.split('/tag/')[1];
         for (let k = 1; k <= this.pageCount; k++) {
             const url = `${this.baseLink + slug}?page=${k}`;
             const links = await this.scrapBaseLinks(url, this.attributesToScrap);
             if (links) {
                 allProductLinks.push(...links);
+                // console.log(allProductLinks);
                 await BlogLinks.bulkCreate(
-                    allProductLinks.map(link => ({ link })),
+                    allProductLinks.map(link => ({ link: link.href, category: category })),
                     { ignoreDuplicates: true }
                 );
             }
@@ -86,15 +90,11 @@ class Scrap {
         return allProductLinks;
     }
 
-    async getAllBaseLinks() {
-        const allLinks = await AllLinks.findAll();
-        // console.log('All links:', JSON.stringify(allLinks, null, 2));
-        return allLinks;
+    async getAllBaseLinks(modal) {
+        const allData = await modal.findAll();
+        return allData;
     }
 
-    async truncate() {
-        await AllLinks.destroy({ truncate: true });
-    }
     async getSingleProduct(id) {
         const row = await AllLinks.findByPk(id);
         // console.log(JSON.stringify(row, null, 2));

@@ -1,16 +1,18 @@
 const Scrap = require('./controllers/Scrap.js');
+const { BlogLinks } = require('./models');
 const baseLink = 'https://www.ccbusinessreview.com.au';
 const attributesToScrap = {
     "a": {
         "text": "Continue reading"
     }
 };
-const pageCount = 10;
+const pageCount = 54;
 const scrapper = new Scrap(baseLink, attributesToScrap, pageCount);
 
 (async () => {
 
     // await scrapper.sync();
+    // await scrapper.truncate(BlogLinks);
 
     // const allData = await scrapper.getAllBaseLinks();
     // console.log(allData);
@@ -23,8 +25,9 @@ const scrapper = new Scrap(baseLink, attributesToScrap, pageCount);
 
 
 
-    const blogBaseLinks = await scrapper.runScrappingForBaseLinks('/blog/tag/editorial');
-    console.log(blogBaseLinks);
+    const fetchedData = await scrapper.runScrappingForBaseLinks('/blog/tag/business-news');
+    // const allData = await scrapper.getAllBaseLinks(BlogLinks);
+    console.log(fetchedData);
 
 })();
 
