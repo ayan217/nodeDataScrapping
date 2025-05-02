@@ -1,7 +1,12 @@
 const puppeteer = require('puppeteer');
-const { syncModels, AllLinks } = require('../models');
+const { syncModels, AllLinks, BlogLinks } = require('../models');
 
-class Scrap {K
+class Scrap {
+    constructor(baseLink, attributesToScrap, pageCount) {
+        this.baseLink = baseLink;
+        this.attributesToScrap = attributesToScrap;
+        this.pageCount = pageCount;
+    }
     async sync() {
         await syncModels();
     }
@@ -27,56 +32,58 @@ class Scrap {K
         await browser.close();
         return data;
     }
-    async scrapBaseLinks(url) {
+    async scrapBaseLinks(url, attributesToScrap) {
         const browser = await puppeteer.launch({
             headless: true,
-            executablePath: '/usr/bin/google-chrome',
+            // executablePath: '/usr/bin/google-chrome',
+            executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
         const page = await browser.newPage();
 
         await page.goto(url, { waitUntil: 'networkidle2' });
 
-        const data = await page.evaluate(() => {
-            const productContainer = document.querySelector('div[data-aid="PRODUCT_LIST_RENDERED"]');
-            if (!productContainer) return { error: "Product list not found" };
+        const data = await page.evaluate((attrs, baseLink) => {
 
-            const products = [];
-            const productCards = productContainer.querySelectorAll('div[data-ux="Block"]');
 
-            if (productCards.length === 0) return { error: "No products found" };
+            const result = [];
 
-            productCards.forEach(card => {
-                const link = card.querySelector('a[data-ux="Link"]')?.href || null;
-                if (link !== null) {
-                    products.push(link);
-                }
-            });
+            for (const selector in attrs) {
+                const criteria = attrs[selector];
 
-            return { products };
-        });
+                document.querySelectorAll(selector).forEach(el => {
+                    const item = {};
+
+                    if (criteria.text && el.textContent.includes(criteria.text)) {
+                        item.href = baseLink + el.getAttribute('href');
+                        result.push(item);
+                    }
+                });
+            }
+
+            return { result };
+
+
+        }, attributesToScrap, this.baseLink);
 
         await browser.close();
-        return data.products;
+        return data.result;
     }
-
-    async runScrappingForBaseLinks() {
-        const pageCount = 9;
+    async runScrappingForBaseLinks(slug) {
         const allProductLinks = [];
 
-        for (let k = 1; k <= pageCount; k++) {
-            const url = `https://theartshoppeonline.com/shop/ols/products?page=${k}`;
-            const links = await this.scrapBaseLinks(url);
+        for (let k = 1; k <= this.pageCount; k++) {
+            const url = `${this.baseLink + slug}?page=${k}`;
+            const links = await this.scrapBaseLinks(url, this.attributesToScrap);
             if (links) {
                 allProductLinks.push(...links);
-                await AllLinks.bulkCreate(
+                await BlogLinks.bulkCreate(
                     allProductLinks.map(link => ({ link })),
                     { ignoreDuplicates: true }
                 );
             }
         }
-
-        console.log(allProductLinks);
+        return allProductLinks;
     }
 
     async getAllBaseLinks() {
