@@ -6,7 +6,7 @@ const attributesToScrap = {
         "text": "Continue reading"
     }
 };
-const scrapper = new Scrap(baseLink, attributesToScrap, BlogLinks);
+const scrapper = new Scrap(baseLink, BlogLinks);
 
 (async () => {
 
@@ -17,23 +17,23 @@ const scrapper = new Scrap(baseLink, attributesToScrap, BlogLinks);
 
 
 
-    const categories = {
-        'editorial': 13,
-        'news': 7,
-        'business-news': 54,
-        'cover-story': 7,
-        'manufacturing-news': 7,
-        'property': 6,
-        'tourism-news': 2
-    };
+    // const categories = {
+    //     'editorial': 13,
+    //     'news': 7,
+    //     'business-news': 54,
+    //     'cover-story': 7,
+    //     'manufacturing-news': 7,
+    //     'property': 6,
+    //     'tourism-news': 2
+    // };
 
 
-    const promises = Object.keys(categories).map(async (category) => {
-        const fetchedData = await scrapper.runScrappingForBaseLinks(`/blog/tag/${category}`, categories[category]);
-        console.log(fetchedData);
-    });
+    // const promises = Object.keys(categories).map(async (category) => {
+    //     const fetchedData = await scrapper.runScrappingForBaseLinks(`/blog/tag/${category}`, categories[category], attributesToScrap);
+    //     console.log(fetchedData);
+    // });
 
-    await Promise.all(promises);
+    // await Promise.all(promises);
 
 
 
@@ -45,7 +45,17 @@ const scrapper = new Scrap(baseLink, attributesToScrap, BlogLinks);
     //     console.log(`${index} || ${data.category} || ${data.link}`);
     // })
 
-    // console.log(allData.length);
+    // console.log(allData);
+
+
+
+
+
+
+    // const singleLinkRow = await scrapper.getSingleProduct(210);
+    // const link = singleLinkRow.link;
+    // const singleLinkData = await scrapper.scrapSingleProduct(link);
+    // console.log(singleLinkData);
 
 })();
 
