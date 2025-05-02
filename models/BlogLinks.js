@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 
 module.exports = (sequelize) => {
-    class BlogLinks extends Model { }
+    class BlogLinks extends Model {}
 
     BlogLinks.init(
         {
@@ -11,24 +11,24 @@ module.exports = (sequelize) => {
                 primaryKey: true,
             },
             link: {
-                type: DataTypes.STRING,
+                type: DataTypes.STRING(255), 
                 allowNull: false,
             },
             category: {
-                type: DataTypes.STRING,
+                type: DataTypes.STRING(100),
                 allowNull: true,
-            }
+            },
         },
         {
-            freezeTableName: true,
             sequelize,
             modelName: 'BlogLinks',
+            freezeTableName: true,
             indexes: [
                 {
                     unique: true,
-                    fields: ['link', 'category']
-                }
-            ]
+                    fields: ['link', 'category'], 
+                },
+            ],
         }
     );
 

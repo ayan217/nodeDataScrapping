@@ -13,6 +13,11 @@ class Scrap {
         await this.modal.truncate();
     }
     async scrapSingleProduct(url) {
+        const doesExist = await this.modal.findOne({ where: { link: url } });
+        if (doesExist) {
+            console.log('Already exists in the database:', url);
+            return false;
+        }
         const browser = await puppeteer.launch({
             headless: true,
             // executablePath: '/usr/bin/google-chrome',

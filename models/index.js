@@ -1,13 +1,11 @@
 const { Sequelize } = require('sequelize');
-const path = require('path');
 
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: path.join(__dirname, '../database.sqlite'),
+const sequelize = new Sequelize('ccbusinessreview_blog', 'root', '', {
+    host: 'localhost',
+    dialect: 'mysql',
     logging: false,
 });
 
-const AllLinks = require('./AllLinks')(sequelize);
 const BlogLinks = require('./BlogLinks')(sequelize);
 const Blogs = require('./Blogs')(sequelize);
 
@@ -20,4 +18,4 @@ const syncModels = async () => {
     }
 };
 
-module.exports = { sequelize, AllLinks, BlogLinks, Blogs, syncModels };
+module.exports = { sequelize, BlogLinks, Blogs, syncModels };
