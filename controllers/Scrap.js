@@ -2,16 +2,16 @@ const puppeteer = require('puppeteer');
 const { syncModels, AllLinks, BlogLinks } = require('../models');
 
 class Scrap {
-    constructor(baseLink, attributesToScrap, pageCount) {
+    constructor(baseLink, attributesToScrap, modal) {
         this.baseLink = baseLink;
         this.attributesToScrap = attributesToScrap;
-        this.pageCount = pageCount;
+        this.modal = modal;
     }
     async sync() {
         await syncModels();
     }
-    async truncate(modal) {
-        await modal.truncate();
+    async truncate() {
+        await this.modal.truncate();
     }
     async scrapSingleProduct(url) {
         const browser = await puppeteer.launch({
@@ -72,17 +72,20 @@ class Scrap {
         await browser.close();
         return data.result;
     }
-    async runScrappingForBaseLinks(slug) {
+    async runScrappingForBaseLinks(slug, pageCount) {
         const allProductLinks = [];
         const category = slug.split('/tag/')[1];
-        for (let k = 1; k <= this.pageCount; k++) {
+        for (let k = 1; k <= pageCount; k++) {
             const url = `${this.baseLink + slug}?page=${k}`;
             const links = await this.scrapBaseLinks(url, this.attributesToScrap);
             if (links) {
                 allProductLinks.push(...links);
                 // console.log(allProductLinks);
-                await BlogLinks.bulkCreate(
-                    allProductLinks.map(link => ({ link: link.href, category: category })),
+                await this.modal.bulkCreate(
+                    allProductLinks.map(link => ({
+                        link: link.href,
+                        category: category
+                    })),
                     { ignoreDuplicates: true }
                 );
             }
@@ -90,14 +93,20 @@ class Scrap {
         return allProductLinks;
     }
 
-    async getAllBaseLinks(modal) {
-        const allData = await modal.findAll();
+    async getAllBaseLinks() {
+        const allData = await this.modal.findAll();
+        return allData;
+    }
+
+    async getAllBaseLinksWithConditions(condition) {
+        const allData = await this.modal.findAll({
+            where: condition
+        });
         return allData;
     }
 
     async getSingleProduct(id) {
-        const row = await AllLinks.findByPk(id);
-        // console.log(JSON.stringify(row, null, 2));
+        const row = await this.modal.findByPk(id);
         return row;
     }
 }

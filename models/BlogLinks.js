@@ -23,6 +23,12 @@ module.exports = (sequelize) => {
             freezeTableName: true,
             sequelize,
             modelName: 'BlogLinks',
+            indexes: [
+                {
+                    unique: true,
+                    fields: ['link', 'category']
+                }
+            ]
         }
     );
 
