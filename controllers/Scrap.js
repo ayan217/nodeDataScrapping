@@ -30,13 +30,13 @@ class Scrap {
             const parts = dateTimeText.split('on');
             const date = parts[1] ? parts[1].trim() : null;
             const image = container.querySelector('img.blog-img')?.src;
-            const blogBody = container.querySelector('div.blog-body')?.innerHTML;
+            const body = container.querySelector('div.blog-body')?.innerHTML;
 
             const singleLinkData = {
                 title: title,
                 date: date,
                 image: image,
-                blogBody: blogBody
+                body: body
             };
             return { singleLinkData };
 

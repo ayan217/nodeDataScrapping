@@ -9,6 +9,7 @@ const sequelize = new Sequelize({
 
 const AllLinks = require('./AllLinks')(sequelize);
 const BlogLinks = require('./BlogLinks')(sequelize);
+const Blogs = require('./Blogs')(sequelize);
 
 const syncModels = async () => {
     try {
@@ -19,4 +20,4 @@ const syncModels = async () => {
     }
 };
 
-module.exports = { sequelize, AllLinks, BlogLinks, syncModels };
+module.exports = { sequelize, AllLinks, BlogLinks, Blogs, syncModels };
