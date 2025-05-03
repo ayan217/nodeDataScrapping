@@ -1,11 +1,6 @@
 const Scrap = require('./controllers/Scrap.js');
 const { BlogLinks, Blogs } = require('./models');
 const baseLink = 'https://www.ccbusinessreview.com.au';
-const attributesToScrap = {
-    "a": {
-        "text": "Continue reading"
-    }
-};
 const scrapper = new Scrap(baseLink, BlogLinks);
 
 (async () => {
@@ -15,6 +10,12 @@ const scrapper = new Scrap(baseLink, BlogLinks);
 
 
 
+
+    // const attributesToScrap = {
+    //     "a": {
+    //         "text": "Read More"
+    //     }
+    // };
 
 
     // const categories = {
@@ -36,10 +37,12 @@ const scrapper = new Scrap(baseLink, BlogLinks);
     // await Promise.all(promises);
 
 
+    // const fetchedData = await scrapper.runScrappingForBaseLinks('/blog.html', 102, attributesToScrap);
 
 
 
-    const allData = await scrapper.getAllBaseLinks();
+
+    // const allData = await scrapper.getAllBaseLinks();
     // const allData = await scrapper.getAllBaseLinksWithConditions({ category: 'business-news' });
     // allData.forEach(function (data, index) {
     //     console.log(`${index} || ${data.category} || ${data.link}`);
@@ -49,25 +52,25 @@ const scrapper = new Scrap(baseLink, BlogLinks);
 
 
 
-    for (const data of allData) {
-        try {
-            const singleLinkData = await scrapper.scrapSingleProduct(data.link, data.category);
+    // for (const data of allData) {
+    //     try {
+    //         const singleLinkData = await scrapper.scrapSingleProduct(data.link);
 
-            if (singleLinkData) {
-                await Blogs.create({
-                    title: singleLinkData.title,
-                    date: singleLinkData.date,
-                    image: singleLinkData.image,
-                    body: singleLinkData.body,
-                    link: data.link,
-                    category: data.category
-                });
-                console.log('Data inserted successfully >> ' + data.link);
-            }
-        } catch (error) {
-            console.error(data.link + ' >> Error inserting data:', error);
-        }
-    }
+    //         if (singleLinkData) {
+    //             await Blogs.create({
+    //                 title: singleLinkData.title,
+    //                 date: singleLinkData.date,
+    //                 image: singleLinkData.image,
+    //                 body: singleLinkData.body,
+    //                 link: data.link,
+    //                 category: singleLinkData.category
+    //             });
+    //             console.log('Data inserted successfully >> ' + data.link);
+    //         }
+    //     } catch (error) {
+    //         console.error(data.link + ' >> Error inserting data:', error);
+    //     }
+    // }
 
 
 

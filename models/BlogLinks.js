@@ -14,10 +14,6 @@ module.exports = (sequelize) => {
                 type: DataTypes.STRING(255), 
                 allowNull: false,
             },
-            category: {
-                type: DataTypes.STRING(100),
-                allowNull: true,
-            },
         },
         {
             sequelize,
@@ -26,7 +22,7 @@ module.exports = (sequelize) => {
             indexes: [
                 {
                     unique: true,
-                    fields: ['link', 'category'], 
+                    fields: ['link'], 
                 },
             ],
         }

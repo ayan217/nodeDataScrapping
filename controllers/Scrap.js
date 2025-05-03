@@ -12,8 +12,8 @@ class Scrap {
     async truncate() {
         await this.modal.truncate();
     }
-    async scrapSingleProduct(url, category) {
-        const doesExist = await Blogs.findOne({ where: { link: url, category: category } });
+    async scrapSingleProduct(url) {
+        const doesExist = await Blogs.findOne({ where: { link: url } });
         if (doesExist) {
             console.log('Already exists in the database:', url);
             return false;
@@ -36,12 +36,14 @@ class Scrap {
             const date = parts[1] ? parts[1].trim() : null;
             const image = container.querySelector('img.blog-img')?.src;
             const body = container.querySelector('div.blog-body')?.innerHTML;
+            const category = document.querySelector('a.blog-tag')?.textContent ?? 'uncategorized';
 
             const singleLinkData = {
                 title: title,
                 date: date,
                 image: image,
-                body: body
+                body: body,
+                category: category,
             };
             return { singleLinkData };
 
@@ -88,7 +90,7 @@ class Scrap {
     }
     async runScrappingForBaseLinks(slug, pageCount, attributesToScrap) {
         const allProductLinks = [];
-        const category = slug.split('/tag/')[1];
+        // const category = slug.split('/tag/')[1];
         for (let k = 1; k <= pageCount; k++) {
             const url = `${this.baseLink + slug}?page=${k}`;
             const links = await this.scrapUrl(url, attributesToScrap);
@@ -98,10 +100,11 @@ class Scrap {
                 await this.modal.bulkCreate(
                     allProductLinks.map(link => ({
                         link: link.href,
-                        category: category
+                        // category: category
                     })),
                     { ignoreDuplicates: true }
                 );
+                console.log(links);
             }
         }
         return allProductLinks;
